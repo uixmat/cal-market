@@ -46,6 +46,7 @@ export function ListingCard({
               alt={title}
               className="object-cover"
               fill
+              loading="lazy"
               sizes="(max-width: 768px) 100vw, 33vw"
               src={imageUrl}
             />

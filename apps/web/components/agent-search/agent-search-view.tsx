@@ -13,9 +13,9 @@ import {
 import { SectionContainer } from "@/components/layout/section-container";
 import { SectionHeader } from "@/components/layout/section-header";
 import { ListingsGrid } from "@/components/listings-grid";
+import { ListingsGridSkeleton } from "@/components/listings-grid-skeleton";
 import { ListingsPagination } from "@/components/listings-pagination";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import type {
   AgentExchange,
   BrowseListing,
@@ -90,17 +90,7 @@ function SearchSuggestions({
 }
 
 function SearchLoadingGrid(): React.ReactElement {
-  return (
-    <div className="grid flex-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {Array.from({ length: 6 }).map((_, index) => (
-        <div className="flex flex-col gap-3" key={`skeleton-${index}`}>
-          <Skeleton className="aspect-[4/3] w-full rounded-none" />
-          <Skeleton className="h-5 w-2/3" />
-          <Skeleton className="h-4 w-full" />
-        </div>
-      ))}
-    </div>
-  );
+  return <ListingsGridSkeleton className="flex-1" count={6} />;
 }
 
 function SearchResultsSection({
