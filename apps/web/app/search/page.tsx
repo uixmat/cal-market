@@ -4,6 +4,7 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useState } from "react";
 
+import { SiteRailInset } from "@/components/layout/site-rail";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -23,7 +24,7 @@ export default function SearchPage() {
   const isLoading = status === "submitted" || status === "streaming";
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col px-6 py-10">
+    <SiteRailInset className="mx-auto flex w-full max-w-3xl flex-col py-10">
       <div className="mb-8">
         <h1 className="font-semibold text-3xl tracking-tight">AI Search</h1>
         <p className="mt-2 text-muted-foreground">
@@ -104,6 +105,6 @@ export default function SearchPage() {
           Send
         </Button>
       </form>
-    </div>
+    </SiteRailInset>
   );
 }
