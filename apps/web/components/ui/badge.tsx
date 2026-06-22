@@ -23,18 +23,36 @@ export const badgeVariants = cva(
         sm: "h-5 min-w-5 rounded-[.25rem] px-[calc(--spacing(1)-1px)] text-xs sm:h-4 sm:min-w-4 sm:text-[.625rem]",
       },
       variant: {
+        dance:
+          "bg-fuchsia-500/10 text-fuchsia-800 dark:bg-fuchsia-500/20 dark:text-fuchsia-300",
         default:
           "bg-primary text-primary-foreground [button&,a&]:hover:bg-primary/90",
+        dentist:
+          "bg-sky-500/10 text-sky-800 dark:bg-sky-500/20 dark:text-sky-300",
         destructive:
           "bg-destructive text-white [button&,a&]:hover:bg-destructive/90",
+        doctor:
+          "bg-blue-500/10 text-blue-800 dark:bg-blue-500/20 dark:text-blue-300",
         error:
           "bg-destructive/8 text-destructive-foreground dark:bg-destructive/16",
+        fitness:
+          "bg-emerald-500/10 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300",
         info: "bg-info/8 text-info-foreground dark:bg-info/16",
+        "mountain-biking":
+          "bg-orange-500/10 text-orange-800 dark:bg-orange-500/20 dark:text-orange-300",
         outline:
           "border-input bg-background text-foreground dark:bg-input/32 [button&,a&]:hover:bg-accent/50 dark:[button&,a&]:hover:bg-input/48",
         secondary:
           "bg-secondary text-secondary-foreground [button&,a&]:hover:bg-secondary/90",
+        "ski-snowboard":
+          "bg-cyan-500/10 text-cyan-800 dark:bg-cyan-500/20 dark:text-cyan-300",
+        "social-club":
+          "bg-violet-500/10 text-violet-800 dark:bg-violet-500/20 dark:text-violet-300",
+        sports:
+          "bg-lime-600/10 text-lime-800 dark:bg-lime-500/20 dark:text-lime-300",
         success: "bg-success/8 text-success-foreground dark:bg-success/16",
+        veterinarian:
+          "bg-amber-500/10 text-amber-900 dark:bg-amber-500/20 dark:text-amber-300",
         warning: "bg-warning/8 text-warning-foreground dark:bg-warning/16",
       },
     },

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { CategoryBadge } from "@/components/category-badge";
 import { SiteRailInset } from "@/components/layout/site-rail";
 import { Button } from "@/components/ui/button";
 import {
@@ -49,8 +50,12 @@ export default async function ListingPage({ params }: ListingPageProps) {
         <CardHeader>
           <CardTitle className="text-2xl">{listing.title}</CardTitle>
           <CardDescription>
-            {listing.category.replaceAll("-", " ")} · {listing.city},{" "}
-            {listing.region}
+            <div className="flex flex-wrap items-center gap-2">
+              <CategoryBadge category={listing.category} />
+              <div className="font-semibold text-xs">
+                · {listing.city}, {listing.region}
+              </div>
+            </div>
           </CardDescription>
         </CardHeader>
         <CardPanel className="space-y-6">
