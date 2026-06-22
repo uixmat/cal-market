@@ -31,7 +31,7 @@ const seedListings = [
     city: "San Francisco",
     description: "Invisalign and braces for teens and adults in downtown SF.",
     imageUrl:
-      "https://images.unsplash.com/photo-1606811971330-8c7463b81455?w=800&q=80",
+      "https://images.unsplash.com/photo-1609840114035-3c981b782dfe?w=800&q=80",
     lat: 37.7849,
     lng: -122.4094,
     region: "CA",
@@ -45,7 +45,7 @@ const seedListings = [
     description:
       "Veterinary care for dogs and cats with same-week appointments.",
     imageUrl:
-      "https://images.unsplash.com/photo-1628009368232-7bb7cfcb0def?w=800&q=80",
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&q=80",
     lat: 37.7599,
     lng: -122.4148,
     region: "CA",
@@ -86,7 +86,7 @@ const seedListings = [
     description:
       "Virtual doctor visits for common illnesses and prescriptions.",
     imageUrl:
-      "https://images.unsplash.com/photo-1579684385127-1ef15d558a9a?w=800&q=80",
+      "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80",
     lat: 37.7749,
     lng: -122.4194,
     region: "CA",
@@ -99,7 +99,7 @@ const seedListings = [
     city: "San Francisco",
     description: "Weekly salsa nights and beginner-friendly group classes.",
     imageUrl:
-      "https://images.unsplash.com/photo-1504609770536-021936a004c5?w=800&q=80",
+      "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&q=80",
     lat: 37.7699,
     lng: -122.4469,
     region: "CA",
@@ -151,7 +151,7 @@ const seedListings = [
     city: "San Francisco",
     description: "Court rentals and coaching for recreational players.",
     imageUrl:
-      "https://images.unsplash.com/photo-1622279457486-b62dad74ac43?w=800&q=80",
+      "https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=800&q=80",
     lat: 37.7694,
     lng: -122.4862,
     region: "CA",
@@ -179,7 +179,7 @@ const seedListings = [
     description:
       "Outdoor vinyasa and restorative yoga sessions at Ocean Beach.",
     imageUrl:
-      "https://images.unsplash.com/photo-1545205597-3b1604a1ab2c?w=800&q=80",
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&q=80",
     lat: 37.7596,
     lng: -122.5107,
     region: "CA",
@@ -193,7 +193,7 @@ const seedListings = [
     description:
       "Monthly book discussions over coffee in a cozy neighborhood cafe.",
     imageUrl:
-      "https://images.unsplash.com/photo-1524995995642-b9945c6e287e?w=800&q=80",
+      "https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800&q=80",
     lat: 37.7615,
     lng: -122.4241,
     region: "CA",
@@ -232,7 +232,7 @@ const seedListings = [
     city: "Palo Alto",
     description: "Full-service animal hospital with surgical and dental care.",
     imageUrl:
-      "https://images.unsplash.com/photo-1583337130417-3346a7250b6?w=800&q=80",
+      "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80",
     lat: 37.4419,
     lng: -122.143,
     region: "CA",
@@ -259,7 +259,7 @@ const seedListings = [
     city: "San Rafael",
     description: "Private swim lessons for kids and adults at local pools.",
     imageUrl:
-      "https://images.unsplash.com/photo-1530549387789-4db101de663d?w=800&q=80",
+      "https://images.unsplash.com/photo-1576678927484-cc907957088c?w=800&q=80",
     lat: 37.9735,
     lng: -122.5311,
     region: "CA",
@@ -273,7 +273,7 @@ const seedListings = [
     description:
       "Guided street photography tours through iconic neighborhoods.",
     imageUrl:
-      "https://images.unsplash.com/photo-1452587925148-ce544e77ae70?w=800&q=80",
+      "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80",
     lat: 37.7955,
     lng: -122.3937,
     region: "CA",
