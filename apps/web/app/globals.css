@@ -273,7 +273,15 @@
   pre {
     font-family: var(--font-mono);
   }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+  }
   html {
-    @apply font-sans font-mono;
+    @apply font-sans;
   }
 }

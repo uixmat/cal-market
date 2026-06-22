@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { SiteRailInset } from "@/components/layout/site-rail";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,7 +28,7 @@ export default async function ListingPage({ params }: ListingPageProps) {
   }
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-6 py-10">
+    <SiteRailInset className="mx-auto w-full max-w-4xl py-10">
       <div className="mb-6">
         <Button render={<Link href="/" />} variant="ghost">
           Back to browse
@@ -69,6 +70,6 @@ export default async function ListingPage({ params }: ListingPageProps) {
           </Button>
         </CardPanel>
       </Card>
-    </div>
+    </SiteRailInset>
   );
 }
