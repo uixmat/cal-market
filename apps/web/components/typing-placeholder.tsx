@@ -102,10 +102,10 @@ function useTypingPlaceholder(
 }
 
 export const promptInputOverlayClassName =
-  "pointer-events-none absolute inset-0 h-10 overflow-hidden ps-1 text-base leading-10 sm:ps-1.5";
+  "pointer-events-none absolute inset-0 h-10 overflow-hidden ps-1 text-left text-base leading-10 sm:ps-1.5";
 
 export const promptInputFieldClassName =
-  "[&_[data-slot=input]]:h-10 [&_[data-slot=input]]:w-full [&_[data-slot=input]]:min-w-0 [&_[data-slot=input]]:border-0 [&_[data-slot=input]]:bg-transparent [&_[data-slot=input]]:px-0 [&_[data-slot=input]]:ps-1 [&_[data-slot=input]]:text-base [&_[data-slot=input]]:leading-10 [&_[data-slot=input]]:text-white sm:[&_[data-slot=input]]:ps-1.5";
+  "[&_[data-slot=input]]:h-10 [&_[data-slot=input]]:w-full [&_[data-slot=input]]:min-w-0 [&_[data-slot=input]]:border-0 [&_[data-slot=input]]:bg-transparent [&_[data-slot=input]]:px-0 [&_[data-slot=input]]:ps-1 [&_[data-slot=input]]:text-left [&_[data-slot=input]]:text-base [&_[data-slot=input]]:leading-10 [&_[data-slot=input]]:text-white sm:[&_[data-slot=input]]:ps-1.5";
 
 export function TypingPlaceholderOverlay({
   active,

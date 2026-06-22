@@ -10,7 +10,9 @@ import {
   MarkerContent,
   MarkerLabel,
   MarkerTooltip,
+  useMap,
 } from "@/components/ui/map";
+import { cn } from "@/lib/utils";
 
 interface EventMarkerProps {
   event: NearbyEvent;
@@ -35,6 +37,8 @@ export function EventMarker({
 }: EventMarkerProps): React.ReactElement {
   const markerRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
+  const { resolvedTheme } = useMap();
+  const isLightMap = resolvedTheme === "light";
 
   return (
     <MapMarker
@@ -54,7 +58,7 @@ export function EventMarker({
         ) : (
           <>
             <div className="relative size-5">
-              {reducedMotion ? null : (
+              {!isLightMap && !reducedMotion ? (
                 <motion.span
                   animate={{
                     opacity: [0, 0, 0.5, 0, 0],
@@ -71,10 +75,13 @@ export function EventMarker({
                     times: [0, 0.05, 0.4, 0.82, 1],
                   }}
                 />
-              )}
+              ) : null}
               <motion.div
                 ref={markerRef}
-                className="relative z-10 size-5 cursor-pointer rounded-full border-2 border-white bg-card shadow-lg"
+                className={cn(
+                  "relative z-10 size-5 cursor-pointer rounded-full shadow-lg",
+                  isLightMap ? "bg-foreground" : "border-2 border-white bg-card"
+                )}
                 transition={{ bounce: 0, duration: 0.3, type: "spring" }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
