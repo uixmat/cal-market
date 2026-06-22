@@ -5,6 +5,7 @@ import type * as React from "react";
 import { useEffect, useRef, useState } from "react";
 
 import { Shimmer } from "@/components/agent-search/shimmer";
+import { MarkdownContent } from "@/components/markdown-content";
 import { cn } from "@/lib/utils";
 
 const COLLAPSED_MAX_HEIGHT = "8.125rem";
@@ -138,7 +139,7 @@ export function AgentReasoningResponse({
             ref={contentRef}
             style={isExpanded ? undefined : { maxHeight: COLLAPSED_MAX_HEIGHT }}
           >
-            {text}
+            {hasText ? <MarkdownContent>{text}</MarkdownContent> : null}
           </div>
 
           {showFade ? (

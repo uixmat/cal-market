@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { AgentSearchView } from "@/components/agent-search/agent-search-view";
 import { PageSections } from "@/components/layout/page-sections";
 import { SectionContainer } from "@/components/layout/section-container";
+import { ListingsGridSkeleton } from "@/components/listings-grid-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toBrowseListing } from "@/lib/agent-search";
 
@@ -19,14 +20,7 @@ function SearchFallback() {
           <Skeleton className="h-5 w-full max-w-lg" />
         </div>
         <Skeleton className="h-12 w-full rounded-full" />
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: LISTINGS_PAGE_SIZE }).map((_, index) => (
-            <Skeleton
-              className="aspect-[4/3] w-full rounded-none"
-              key={`search-fallback-${index}`}
-            />
-          ))}
-        </div>
+        <ListingsGridSkeleton count={LISTINGS_PAGE_SIZE} />
       </div>
     </SectionContainer>
   );
