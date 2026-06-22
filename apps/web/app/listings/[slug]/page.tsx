@@ -1,18 +1,14 @@
 import { getListingBySlug } from "@cal-market/agent-core";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { CategoryBadge } from "@/components/category-badge";
 import { SiteRailInset } from "@/components/layout/site-rail";
-import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardPanel,
-  CardTitle,
-} from "@/components/ui/card";
+  ListingDetailContent,
+  ListingDetailImage,
+} from "@/components/listing-detail/listing-detail-content";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 export const dynamic = "force-dynamic";
 
@@ -31,49 +27,19 @@ export default async function ListingPage({ params }: ListingPageProps) {
   return (
     <SiteRailInset className="mx-auto w-full max-w-4xl py-10">
       <div className="mb-6">
-        <Button render={<Link href="/" />} variant="ghost">
+        <Button render={<Link href="/search" />} variant="ghost">
           Back to browse
         </Button>
       </div>
 
       <Card className="overflow-hidden">
-        <div className="relative aspect-[16/9] w-full">
-          <Image
-            alt={listing.title}
-            className="object-cover"
-            fill
-            priority
-            sizes="(max-width: 896px) 100vw, 896px"
-            src={listing.imageUrl}
-          />
-        </div>
-        <CardHeader>
-          <CardTitle className="text-2xl">{listing.title}</CardTitle>
-          <CardDescription>
-            <div className="flex flex-wrap items-center gap-2">
-              <CategoryBadge category={listing.category} />
-              <div className="font-semibold text-xs">
-                · {listing.city}, {listing.region}
-              </div>
-            </div>
-          </CardDescription>
-        </CardHeader>
-        <CardPanel className="space-y-6">
-          <p className="text-base leading-relaxed">{listing.description}</p>
-          <Button
-            render={
-              <a
-                aria-label={`Book ${listing.title} on Cal.com`}
-                href={listing.calLink}
-                rel="noopener noreferrer"
-                target="_blank"
-              />
-            }
-            size="lg"
-          >
-            Book on Cal.com
-          </Button>
-        </CardPanel>
+        <ListingDetailImage
+          alt={listing.title}
+          imageUrl={listing.imageUrl}
+          priority
+          sizes="(max-width: 896px) 100vw, 896px"
+        />
+        <ListingDetailContent listing={listing} />
       </Card>
     </SiteRailInset>
   );

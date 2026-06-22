@@ -60,7 +60,7 @@ export function DiscoverPromptInput({
       }}
     >
       <InputGroup
-        className={discoverPromptInputClassName}
+        className={cn(discoverPromptInputClassName, "text-left")}
         onBlur={(event) => {
           if (!event.currentTarget.contains(event.relatedTarget)) {
             setFocused(false);
