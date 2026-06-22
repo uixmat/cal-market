@@ -7,6 +7,16 @@ import { cn } from "@/lib/utils";
 
 import { HERO_SLIDE_DURATION_MS } from "./hero-slides";
 
+const TICKER_DOT_HEIGHT_PX = 8;
+const TICKER_DOT_INACTIVE_WIDTH_PX = 8;
+const TICKER_DOT_ACTIVE_WIDTH_PX = 32;
+
+const tickerWidthTransition = {
+  bounce: 0.2,
+  type: "spring" as const,
+  visualDuration: 0.35,
+};
+
 interface CarouselTickerProps {
   activeIndex: number;
   count: number;
@@ -22,7 +32,10 @@ export function CarouselTicker({
   reducedMotion,
   onSelect,
 }: CarouselTickerProps): React.ReactElement {
-  const duration = reducedMotion ? 0 : HERO_SLIDE_DURATION_MS / 1000;
+  const progressDuration = reducedMotion ? 0 : HERO_SLIDE_DURATION_MS / 1000;
+  const widthTransition = reducedMotion
+    ? { duration: 0 }
+    : tickerWidthTransition;
 
   return (
     <div
@@ -43,35 +56,33 @@ export function CarouselTicker({
             role="tab"
             type="button"
           >
-            {isActive ? (
-              <motion.div
-                className="relative h-2 w-8 overflow-hidden rounded-full bg-white/35"
-                layoutId="hero-carousel-ticker"
-                transition={{
-                  bounce: 0.2,
-                  type: "spring",
-                  visualDuration: 0.35,
-                }}
-              >
+            <motion.div
+              animate={{
+                width: isActive
+                  ? TICKER_DOT_ACTIVE_WIDTH_PX
+                  : TICKER_DOT_INACTIVE_WIDTH_PX,
+              }}
+              className={cn(
+                "relative overflow-hidden rounded-full bg-white/35",
+                !isActive && "hover:bg-white/55"
+              )}
+              initial={false}
+              style={{ height: TICKER_DOT_HEIGHT_PX }}
+              transition={widthTransition}
+            >
+              {isActive ? (
                 <motion.div
-                  animate={{ scaleX: paused || reducedMotion ? 1 : 1 }}
+                  animate={{ scaleX: 1 }}
                   className="absolute inset-y-0 left-0 w-full origin-left rounded-full bg-white"
                   initial={{ scaleX: reducedMotion ? 1 : 0 }}
                   key={`${activeIndex}-${paused ? "paused" : "playing"}`}
                   transition={{
-                    duration: paused ? 0 : duration,
+                    duration: paused ? 0 : progressDuration,
                     ease: "linear",
                   }}
                 />
-              </motion.div>
-            ) : (
-              <span
-                className={cn(
-                  "block size-2 rounded-full bg-white/35 transition-colors",
-                  "hover:bg-white/55"
-                )}
-              />
-            )}
+              ) : null}
+            </motion.div>
           </button>
         );
       })}

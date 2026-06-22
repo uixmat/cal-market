@@ -1,17 +1,16 @@
 "use client";
 
-import { MapPinIcon } from "lucide-react";
 import Link from "next/link";
 import type * as React from "react";
 import { useEffect, useState } from "react";
 
 import { siteRailInsetClass } from "@/components/layout/site-rail";
+import { LocationCountrySelector } from "@/components/location-country-selector";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const scrollThresholdPx = 12;
-const userLocation = "San Francisco";
 
 export function SiteHeader(): React.ReactElement {
   const [scrolled, setScrolled] = useState(false);
@@ -28,10 +27,17 @@ export function SiteHeader(): React.ReactElement {
 
   return (
     <header
-      className="sticky top-0 z-50"
+      className="isolate sticky top-0 z-50"
       style={{ viewTransitionName: "site-header" }}
     >
-      <div className={cn(siteRailInsetClass, "pt-4 pb-3")}>
+      <div
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute inset-x-0 top-0 z-0 h-[calc(100%+2rem)] bg-gradient-to-b from-sidebar to-transparent transition-opacity duration-200 ease-out",
+          scrolled ? "opacity-100" : "opacity-0"
+        )}
+      />
+      <div className={cn(siteRailInsetClass, "relative z-10 pt-4 pb-3")}>
         <div
           className={cn(
             "mx-auto flex w-full items-center justify-between gap-3 rounded-lg border px-3 py-2 transition-[max-width,background-color,border-color,box-shadow,backdrop-filter,border-radius] duration-200 ease-out sm:gap-4 sm:px-4 sm:py-2.5",
@@ -49,24 +55,12 @@ export function SiteHeader(): React.ReactElement {
               Discover
             </Link>
 
-            <p
-              aria-label={`Current location: ${userLocation}`}
-              className="flex min-w-0 items-center gap-1.5 text-muted-foreground text-sm"
-            >
-              <MapPinIcon aria-hidden className="size-3.5 shrink-0" />
-              <span className="truncate">{userLocation}</span>
-            </p>
+            <LocationCountrySelector />
           </div>
 
-          <nav className="hidden flex-1 items-center justify-center gap-0.5 sm:flex">
-            <Button render={<Link href="/" />} size="sm" variant="ghost">
-              Browse
-            </Button>
-          </nav>
-
-          <div className="flex shrink-0 items-center gap-0.5">
+          <div className="ms-auto flex shrink-0 items-center gap-2">
             <Button render={<Link href="/search" />} size="sm">
-              AI Search
+              Discover
             </Button>
             <ThemeToggle />
           </div>
