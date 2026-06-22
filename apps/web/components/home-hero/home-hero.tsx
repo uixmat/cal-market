@@ -1,19 +1,14 @@
 "use client";
 
-import { ArrowUpIcon } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { useRouter } from "next/navigation";
 import type * as React from "react";
 import { useCallback, useState } from "react";
 
+import { DiscoverPromptInput } from "@/components/discover-prompt-input";
 import { HeroCarousel } from "@/components/home-hero/hero-carousel";
 import { TextFlipSlot } from "@/components/text-flip-slot";
 import { Button } from "@/components/ui/button";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
 import { heroFlipWords } from "@/lib/flip-words";
 import { cn } from "@/lib/utils";
 
@@ -48,37 +43,6 @@ export function HomeHero(): React.ReactElement {
     [router]
   );
 
-  const promptForm = (
-    <form
-      className="w-full"
-      onSubmit={(event) => {
-        event.preventDefault();
-        submitPrompt(input);
-      }}
-    >
-      <InputGroup className="h-auto rounded-full border border-white/20 bg-black/45 p-1.5 ps-5 shadow-lg ring-0 backdrop-blur-md before:hidden sm:ps-6 dark:border-white/15 dark:bg-black/70 has-[input:focus-visible]:border-white/35 has-[input:focus-visible]:ring-[3px] has-[input:focus-visible]:ring-white/15">
-        <InputGroupInput
-          className="h-10 text-base text-white placeholder:text-white/55 sm:h-10 sm:text-base"
-          onChange={(event) => setInput(event.target.value)}
-          placeholder="Ask Discover — e.g. Show me dentists nearby"
-          value={input}
-        />
-        <InputGroupAddon align="inline-end" className="pe-0 has-[>button]:me-0">
-          <Button
-            aria-label="Send prompt"
-            className="size-10 shrink-0 rounded-full text-white hover:bg-white/15 hover:text-white"
-            disabled={!input.trim()}
-            size="icon-lg"
-            type="submit"
-            variant="ghost"
-          >
-            <ArrowUpIcon className="size-4.5" />
-          </Button>
-        </InputGroupAddon>
-      </InputGroup>
-    </form>
-  );
-
   return (
     <section className={cn(heroSurfaceClass, "px-6 py-12 sm:px-16 sm:py-20")}>
       <HeroCarousel />
@@ -110,7 +74,11 @@ export function HomeHero(): React.ReactElement {
           initial={reducedMotion ? false : { opacity: 0, y: 8 }}
           transition={fadeTransition}
         >
-          {promptForm}
+          <DiscoverPromptInput
+            onChange={setInput}
+            onSubmit={() => submitPrompt(input)}
+            value={input}
+          />
         </motion.div>
 
         <motion.div

@@ -8,7 +8,6 @@ import { Shimmer } from "@/components/agent-search/shimmer";
 import { MarkdownContent } from "@/components/markdown-content";
 import { cn } from "@/lib/utils";
 
-const COLLAPSED_MAX_HEIGHT = "8.125rem";
 const MS_IN_S = 1000;
 
 function getThinkingMessage(
@@ -37,21 +36,18 @@ export function AgentReasoningResponse({
   responseKey: string;
   text: string;
 }): React.ReactElement {
-  const [isContentOpen, setIsContentOpen] = useState(true);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [hasOverflow, setHasOverflow] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [duration, setDuration] = useState<number | undefined>();
-  const contentRef = useRef<HTMLDivElement>(null);
   const startTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
-    setIsContentOpen(true);
-    setIsExpanded(false);
+    setIsOpen(true);
+    setDuration(undefined);
+    startTimeRef.current = null;
   }, [responseKey]);
 
   useEffect(() => {
     if (isStreaming) {
-      setIsContentOpen(true);
       if (startTimeRef.current === null) {
         startTimeRef.current = Date.now();
       }
@@ -64,42 +60,19 @@ export function AgentReasoningResponse({
     }
   }, [isStreaming]);
 
-  useEffect(() => {
-    const element = contentRef.current;
-    if (!element || isExpanded || !isContentOpen) {
-      return;
-    }
-
-    const measureOverflow = (): void => {
-      setHasOverflow(element.scrollHeight > element.clientHeight + 1);
-    };
-
-    measureOverflow();
-
-    const observer = new ResizeObserver(measureOverflow);
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, [isContentOpen, isExpanded, text]);
-
   const hasText = text.length > 0;
-  const showFade =
-    isContentOpen && !isExpanded && (hasOverflow || (isStreaming && hasText));
-  const canToggleExpanded = isContentOpen && hasText;
+  const canToggle = hasText || isStreaming;
 
   return (
     <div className={cn("not-prose w-full", className)}>
       <button
-        className="flex w-full items-center gap-2 text-muted-foreground text-sm transition-colors hover:text-foreground"
+        className="flex min-h-5 w-full items-center gap-2 text-muted-foreground text-sm transition-colors hover:text-foreground"
+        disabled={!canToggle}
         onClick={() => {
-          if (!hasText && !isStreaming) {
+          if (!canToggle) {
             return;
           }
-          setIsContentOpen((open) => {
-            if (open) {
-              setIsExpanded(false);
-            }
-            return !open;
-          });
+          setIsOpen((open) => !open);
         }}
         type="button"
       >
@@ -107,48 +80,20 @@ export function AgentReasoningResponse({
         <span className="min-w-0 flex-1 text-left">
           {getThinkingMessage(isStreaming, duration)}
         </span>
-        {hasText ? (
+        {canToggle ? (
           <ChevronDownIcon
             className={cn(
               "size-4 shrink-0 transition-transform duration-200 ease-out",
-              isContentOpen ? "rotate-180" : "rotate-0"
+              isOpen ? "rotate-180" : "rotate-0"
             )}
           />
         ) : null}
       </button>
 
-      {isContentOpen && (hasText || isStreaming) ? (
-        <button
-          aria-expanded={isExpanded}
-          className={cn(
-            "relative mt-3 w-full rounded-lg text-left transition-colors duration-200 ease-out",
-            canToggleExpanded && "cursor-pointer hover:bg-muted/30"
-          )}
-          onClick={() => {
-            if (canToggleExpanded) {
-              setIsExpanded((expanded) => !expanded);
-            }
-          }}
-          type="button"
-        >
-          <div
-            className={cn(
-              "text-pretty text-muted-foreground text-sm leading-relaxed transition-[max-height] duration-300 ease-out sm:text-base",
-              !isExpanded && "overflow-hidden"
-            )}
-            ref={contentRef}
-            style={isExpanded ? undefined : { maxHeight: COLLAPSED_MAX_HEIGHT }}
-          >
-            {hasText ? <MarkdownContent>{text}</MarkdownContent> : null}
-          </div>
-
-          {showFade ? (
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-linear-to-t from-card to-transparent transition-opacity duration-300 ease-out"
-            />
-          ) : null}
-        </button>
+      {isOpen && hasText ? (
+        <div className="mt-3 text-pretty text-muted-foreground text-sm leading-relaxed sm:text-base">
+          <MarkdownContent>{text}</MarkdownContent>
+        </div>
       ) : null}
     </div>
   );

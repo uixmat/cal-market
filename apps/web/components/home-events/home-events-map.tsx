@@ -51,6 +51,7 @@ export function HomeEventsMap(): React.ReactElement {
       <Map
         center={eventsMapCenter}
         className="h-full w-full"
+        scrollZoom={false}
         zoom={eventsMapZoom}
       >
         {nearbyEvents.map((event) => (

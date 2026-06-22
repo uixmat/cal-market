@@ -6,10 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import type * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import {
-  AgentExchangeGhost,
-  AgentPromptBar,
-} from "@/components/agent-search/agent-prompt-bar";
+import { AgentExchangeGhost } from "@/components/agent-search/agent-prompt-bar";
+import { DiscoverPromptInput } from "@/components/discover-prompt-input";
 import { SectionContainer } from "@/components/layout/section-container";
 import { SectionHeader } from "@/components/layout/section-header";
 import { ListingsGrid } from "@/components/listings-grid";
@@ -72,7 +70,7 @@ function SearchSuggestions({
   onSelect: (text: string) => void;
 }): React.ReactElement {
   return (
-    <div className="flex flex-wrap justify-center gap-2 border-border/70 border-y py-5">
+    <div className="flex flex-wrap justify-center gap-2">
       {suggestions.map((suggestion) => (
         <Button
           disabled={disabled}
@@ -247,14 +245,21 @@ export function AgentSearchView({
           title={title}
         />
 
-        <AgentPromptBar
-          disabled={isLoading}
-          onChange={setInput}
-          onSubmit={() => submitPrompt(input)}
-          value={input}
-        />
+        <div className="mx-auto w-full max-w-2xl">
+          <DiscoverPromptInput
+            disabled={isLoading}
+            onChange={setInput}
+            onSubmit={() => submitPrompt(input)}
+            value={input}
+            working={isLoading}
+          />
+        </div>
 
-        {promptSection}
+        {promptSection ? (
+          <div className="min-h-32 border-border/70 border-t py-5">
+            {promptSection}
+          </div>
+        ) : null}
 
         {isLoading && isAgentMode && !hasAgentResults ? (
           <SearchLoadingGrid />
