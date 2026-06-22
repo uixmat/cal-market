@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FeaturedListingsGrid } from "@/components/featured-listings-grid";
 import { HomeCategories } from "@/components/home-categories/home-categories";
 import { HomeListCta } from "@/components/home-cta/home-cta";
+import { HomeEvents } from "@/components/home-events/home-events";
 import { HomeFaq } from "@/components/home-faq/home-faq";
 import { HomeHero } from "@/components/home-hero/home-hero";
 import { PageSections } from "@/components/layout/page-sections";
@@ -47,6 +48,10 @@ export default async function HomePage() {
           <FeaturedListingsGrid listings={listings} />
         </div>
       </SectionContainer>
+
+      <SectionDivider />
+
+      <HomeEvents />
 
       <SectionDivider />
 
