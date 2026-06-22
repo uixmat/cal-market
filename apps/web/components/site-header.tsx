@@ -27,7 +27,10 @@ export function SiteHeader(): React.ReactElement {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50">
+    <header
+      className="sticky top-0 z-50"
+      style={{ viewTransitionName: "site-header" }}
+    >
       <div className={cn(siteRailInsetClass, "pt-4 pb-3")}>
         <div
           className={cn(

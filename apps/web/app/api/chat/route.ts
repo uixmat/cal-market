@@ -38,6 +38,7 @@ export async function POST(request: Request) {
               city: listing.city,
               description: listing.description,
               id: listing.id,
+              imageUrl: listing.imageUrl,
               slug: listing.slug,
               title: listing.title,
             })),

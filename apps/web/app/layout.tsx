@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist_Mono, Inter } from "next/font/google";
 
 import "./globals.css";
+import { ScrollToTop } from "@/components/layout/scroll-to-top";
 import { SiteRail } from "@/components/layout/site-rail";
 import { SiteHeader } from "@/components/site-header";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -45,11 +46,12 @@ export default function RootLayout({
       )}
       suppressHydrationWarning
     >
-      <body className="min-h-full text-foreground">
+      <body className="flex min-h-full flex-col text-foreground">
         <ThemeProvider>
+          <ScrollToTop />
           <SiteRail>
             <SiteHeader />
-            <main className="flex-1">{children}</main>
+            <main className="flex flex-1 flex-col">{children}</main>
           </SiteRail>
         </ThemeProvider>
       </body>
