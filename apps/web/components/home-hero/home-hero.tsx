@@ -4,19 +4,19 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { ArrowUpIcon, XIcon } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import Link from "next/link";
 import type * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { HeroCarousel } from "@/components/home-hero/hero-carousel";
-import { Badge } from "@/components/ui/badge";
+import { TextFlipSlot } from "@/components/text-flip-slot";
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { heroFlipWords } from "@/lib/flip-words";
 import { cn } from "@/lib/utils";
 
 const suggestions = [
@@ -333,19 +333,18 @@ export function HomeHero(): React.ReactElement {
                 key="hero-heading"
                 transition={fadeTransition}
               >
-                <Badge className="border-white/20 bg-white/10 text-white backdrop-blur-sm">
-                  Cal.com side project
-                </Badge>
-
-                <div>
-                  <h1 className="text-balance font-heading font-semibold text-3xl tracking-tight sm:text-5xl">
-                    Discover local services you can book instantly
-                  </h1>
-                  <p className="mx-auto mt-4 max-w-2xl text-pretty text-base text-white/80 sm:text-lg">
-                    A no-commission marketplace for dentists, vets, instructors,
-                    clubs, and more — powered by Cal.com scheduling links.
-                  </p>
-                </div>
+                <h1 className="text-balance font-heading font-semibold text-3xl tracking-tight sm:text-5xl">
+                  <span className="block">
+                    Discover local{" "}
+                    <TextFlipSlot
+                      className="text-white"
+                      interval={2.75}
+                      play={!isChatOpen}
+                      words={heroFlipWords}
+                    />
+                  </span>
+                  <span className="block">you can book instantly</span>
+                </h1>
               </motion.div>
             )}
           </AnimatePresence>
@@ -390,15 +389,6 @@ export function HomeHero(): React.ReactElement {
                     </Button>
                   ))}
                 </div>
-
-                <Button
-                  className="border-white/20 bg-transparent text-white hover:bg-white/10"
-                  render={<Link href="/" />}
-                  size="sm"
-                  variant="outline"
-                >
-                  Browse listings
-                </Button>
               </motion.div>
             )}
           </AnimatePresence>

@@ -285,3 +285,125 @@
     @apply font-sans;
   }
 }
+
+@layer utilities {
+  /*
+   * Fluid typography via CSS pow() — configurable min/max sizes between viewport bounds.
+   * Based on https://gist.github.com/jh3y/d850bd3d04c53e77e900750b65fc2b69
+   */
+  .text-fluid {
+    --font-size-min: 14;
+    --font-size-max: 20;
+    --font-ratio-min: 1;
+    --font-ratio-max: 1;
+    --font-width-min: 375;
+    --font-width-max: 1500;
+    --font-level: 0;
+
+    --fluid-min: calc(
+      var(--font-size-min) * pow(var(--font-ratio-min), var(--font-level, 0))
+    );
+    --fluid-max: calc(
+      var(--font-size-max) * pow(var(--font-ratio-max), var(--font-level, 0))
+    );
+    --fluid-preferred: calc(
+      (var(--fluid-max) - var(--fluid-min)) /
+        (var(--font-width-max) - var(--font-width-min))
+    );
+    --fluid-type: clamp(
+      (var(--fluid-min) / 16) * 1rem,
+      ((var(--fluid-min) / 16) * 1rem) -
+        (((var(--fluid-preferred) * var(--font-width-min)) / 16) * 1rem) +
+        (var(--fluid-preferred) * var(--variable-unit, 100vi)),
+      (var(--fluid-max) / 16) * 1rem
+    );
+
+    font-size: var(--fluid-type);
+  }
+
+  .text-fluid-category {
+    --font-size-min: 14;
+    --font-size-max: 22;
+  }
+}
+
+/*
+ * Listing card ticket seam — corner-shape: scoop (MDN corner-shape).
+ * No outer border; image + body panels carry their own borders.
+ */
+.listing-card {
+  --listing-ticket-notch: 14px;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.listing-card-image {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-bottom: none;
+}
+
+.listing-card-body {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-top: none;
+}
+
+@supports (corner-shape: scoop) {
+  .listing-card-image {
+    border-top-left-radius: calc(var(--radius-2xl) - 1px);
+    border-top-right-radius: calc(var(--radius-2xl) - 1px);
+    border-bottom-left-radius: var(--listing-ticket-notch);
+    border-bottom-right-radius: var(--listing-ticket-notch);
+    corner-top-left-shape: round;
+    corner-top-right-shape: round;
+    corner-bottom-left-shape: scoop;
+    corner-bottom-right-shape: scoop;
+  }
+
+  .listing-card-body {
+    border-top-left-radius: var(--listing-ticket-notch);
+    border-top-right-radius: var(--listing-ticket-notch);
+    border-bottom-left-radius: calc(var(--radius-2xl) - 1px);
+    border-bottom-right-radius: calc(var(--radius-2xl) - 1px);
+    corner-top-left-shape: scoop;
+    corner-top-right-shape: scoop;
+    corner-bottom-left-shape: round;
+    corner-bottom-right-shape: round;
+  }
+}
+
+@supports not (corner-shape: scoop) {
+  .listing-card-image {
+    border-top-left-radius: calc(var(--radius-2xl) - 1px);
+    border-top-right-radius: calc(var(--radius-2xl) - 1px);
+  }
+
+  .listing-card-body {
+    border-bottom-left-radius: calc(var(--radius-2xl) - 1px);
+    border-bottom-right-radius: calc(var(--radius-2xl) - 1px);
+  }
+}
+
+.home-cta-grid {
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--border) 55%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--border) 55%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 2rem 2rem;
+  mask-image: radial-gradient(
+    ellipse 85% 75% at 50% 50%,
+    black 20%,
+    transparent 100%
+  );
+  opacity: 0.7;
+}

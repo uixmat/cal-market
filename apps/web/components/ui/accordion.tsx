@@ -1,7 +1,9 @@
 "use client";
 
 import { Accordion as AccordionPrimitive } from "@base-ui/react/accordion";
-import { ChevronDownIcon } from "lucide-react";
+import { cva } from "class-variance-authority";
+import type { VariantProps } from "class-variance-authority";
+import { ChevronDownIcon, PlusIcon } from "lucide-react";
 import type React from "react";
 
 import { cn } from "@/lib/utils";
@@ -25,24 +27,65 @@ export function AccordionItem({
   );
 }
 
+const accordionTriggerVariants = cva(
+  "flex flex-1 cursor-pointer items-start justify-between gap-4 rounded-md text-left outline-none transition-all focus-visible:ring-[3px] focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-64",
+  {
+    defaultVariants: {
+      indicator: "chevron",
+      size: "default",
+    },
+    variants: {
+      indicator: {
+        chevron: "data-panel-open:*:data-[slot=accordion-indicator]:rotate-180",
+        plus: "data-panel-open:*:data-[slot=accordion-indicator]:rotate-45",
+      },
+      size: {
+        default: "py-4 font-medium text-sm",
+        lg: "py-6 font-semibold text-base sm:text-lg",
+      },
+    },
+  }
+);
+
+const accordionIndicatorVariants = cva(
+  "pointer-events-none shrink-0 opacity-80 transition-transform duration-200 ease-in-out",
+  {
+    defaultVariants: {
+      size: "default",
+    },
+    variants: {
+      size: {
+        default: "size-4 translate-y-0.5",
+        lg: "size-5 translate-y-1",
+      },
+    },
+  }
+);
+
+export interface AccordionTriggerProps
+  extends
+    AccordionPrimitive.Trigger.Props,
+    VariantProps<typeof accordionTriggerVariants> {}
+
 export function AccordionTrigger({
-  className,
   children,
+  className,
+  indicator = "chevron",
+  size = "default",
   ...props
-}: AccordionPrimitive.Trigger.Props): React.ReactElement {
+}: AccordionTriggerProps): React.ReactElement {
+  const IndicatorIcon = indicator === "plus" ? PlusIcon : ChevronDownIcon;
+
   return (
     <AccordionPrimitive.Header className="flex">
       <AccordionPrimitive.Trigger
-        className={cn(
-          "flex flex-1 cursor-pointer items-start justify-between gap-4 rounded-md py-4 text-left font-medium text-sm outline-none transition-all focus-visible:ring-[3px] focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-64 data-panel-open:*:data-[slot=accordion-indicator]:rotate-180",
-          className
-        )}
+        className={cn(accordionTriggerVariants({ className, indicator, size }))}
         data-slot="accordion-trigger"
         {...props}
       >
         {children}
-        <ChevronDownIcon
-          className="pointer-events-none size-4 shrink-0 translate-y-0.5 opacity-80 transition-transform duration-200 ease-in-out"
+        <IndicatorIcon
+          className={accordionIndicatorVariants({ size })}
           data-slot="accordion-indicator"
         />
       </AccordionPrimitive.Trigger>

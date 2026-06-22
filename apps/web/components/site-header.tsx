@@ -1,5 +1,6 @@
 "use client";
 
+import { MapPinIcon } from "lucide-react";
 import Link from "next/link";
 import type * as React from "react";
 import { useEffect, useState } from "react";
@@ -10,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const scrollThresholdPx = 12;
+const userLocation = "San Francisco";
 
 export function SiteHeader(): React.ReactElement {
   const [scrolled, setScrolled] = useState(false);
@@ -36,12 +38,22 @@ export function SiteHeader(): React.ReactElement {
               : "border-transparent bg-transparent shadow-none backdrop-blur-none"
           )}
         >
-          <Link
-            className="shrink-0 font-heading font-semibold text-base tracking-tight sm:text-lg"
-            href="/"
-          >
-            Discover
-          </Link>
+          <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+            <Link
+              className="shrink-0 font-heading font-semibold text-base tracking-tight sm:text-lg"
+              href="/"
+            >
+              Discover
+            </Link>
+
+            <p
+              aria-label={`Current location: ${userLocation}`}
+              className="flex min-w-0 items-center gap-1.5 text-muted-foreground text-sm"
+            >
+              <MapPinIcon aria-hidden className="size-3.5 shrink-0" />
+              <span className="truncate">{userLocation}</span>
+            </p>
+          </div>
 
           <nav className="hidden flex-1 items-center justify-center gap-0.5 sm:flex">
             <Button render={<Link href="/" />} size="sm" variant="ghost">

@@ -1,22 +1,30 @@
 import { getFeaturedListings } from "@cal-market/agent-core";
 import Link from "next/link";
 
+import { FeaturedListingsGrid } from "@/components/featured-listings-grid";
+import { HomeCategories } from "@/components/home-categories/home-categories";
+import { HomeListCta } from "@/components/home-cta/home-cta";
+import { HomeFaq } from "@/components/home-faq/home-faq";
 import { HomeHero } from "@/components/home-hero/home-hero";
 import { PageSections } from "@/components/layout/page-sections";
 import { SectionDivider } from "@/components/layout/rail-divider";
 import { SectionContainer } from "@/components/layout/section-container";
 import { SectionHeader } from "@/components/layout/section-header";
-import { ListingCard } from "@/components/listing-card";
+import { TopRatedProfessionals } from "@/components/top-rated-professionals/top-rated-professionals";
 import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const listings = await getFeaturedListings(12);
+  const listings = await getFeaturedListings(6);
 
   return (
     <PageSections>
       <HomeHero />
+
+      <SectionDivider />
+
+      <HomeCategories />
 
       <SectionDivider />
 
@@ -36,21 +44,21 @@ export default async function HomePage() {
               Search with AI
             </Button>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {listings.map((listing) => (
-              <ListingCard
-                category={listing.category}
-                city={listing.city}
-                description={listing.description}
-                imageUrl={listing.imageUrl}
-                key={listing.id}
-                slug={listing.slug}
-                title={listing.title}
-              />
-            ))}
-          </div>
+          <FeaturedListingsGrid listings={listings} />
         </div>
       </SectionContainer>
+
+      <SectionDivider />
+
+      <TopRatedProfessionals />
+
+      <SectionDivider />
+
+      <HomeListCta />
+
+      <SectionDivider />
+
+      <HomeFaq />
     </PageSections>
   );
 }
