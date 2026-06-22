@@ -94,6 +94,42 @@ export async function getListingBySlug(slug: string): Promise<Listing | null> {
   return listing ?? null;
 }
 
-export async function getFeaturedListings(limit = 12): Promise<Listing[]> {
+export const LISTINGS_PAGE_SIZE = 12;
+
+export async function getFeaturedListings(
+  limit = LISTINGS_PAGE_SIZE
+): Promise<Listing[]> {
   return db.select().from(listings).limit(limit);
+}
+
+export interface ListingsPageResult {
+  listings: Listing[];
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+}
+
+export async function getListingsPage(
+  page = 1,
+  pageSize = LISTINGS_PAGE_SIZE
+): Promise<ListingsPageResult> {
+  const safePage = Math.max(1, page);
+  const offset = (safePage - 1) * pageSize;
+
+  const [results, countResult] = await Promise.all([
+    db.select().from(listings).limit(pageSize).offset(offset),
+    db.select({ count: sql<number>`cast(count(*) as int)` }).from(listings),
+  ]);
+
+  const total = countResult[0]?.count ?? 0;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  return {
+    listings: results,
+    page: Math.min(safePage, totalPages),
+    pageSize,
+    total,
+    totalPages,
+  };
 }

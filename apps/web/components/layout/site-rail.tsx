@@ -24,10 +24,16 @@ export function SiteRail({
 }): React.ReactElement {
   return (
     <div
-      className={cn("flex min-h-full flex-col", pageSectionsBgClass, className)}
+      className={cn(
+        "flex min-h-full flex-1 flex-col",
+        pageSectionsBgClass,
+        className
+      )}
     >
-      <div className={siteRailOuterClass}>
-        <div className="flex min-h-full flex-col border-border border-x">
+      <div
+        className={cn(siteRailOuterClass, "flex min-h-full flex-1 flex-col")}
+      >
+        <div className="flex min-h-full flex-1 flex-col border-border border-x">
           {children}
         </div>
       </div>

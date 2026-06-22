@@ -1,110 +1,69 @@
-"use client";
+import { getListingsPage, LISTINGS_PAGE_SIZE } from "@cal-market/agent-core";
+import { Suspense } from "react";
 
-import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport } from "ai";
-import { useState } from "react";
+import { AgentSearchView } from "@/components/agent-search/agent-search-view";
+import { PageSections } from "@/components/layout/page-sections";
+import { SectionContainer } from "@/components/layout/section-container";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toBrowseListing } from "@/lib/agent-search";
 
-import { SiteRailInset } from "@/components/layout/site-rail";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+export const dynamic = "force-dynamic";
 
-const suggestions = [
-  "Show me dentists nearby",
-  "Book me a dentist nearby",
-  "Find ski instructors in Tahoe",
-  "Show me veterinarians in Oakland",
-];
+function SearchFallback() {
+  return (
+    <SectionContainer className="flex min-h-0 flex-1 flex-col py-8 sm:px-12 sm:py-10">
+      <div className="flex flex-col gap-10">
+        <div className="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
+          <Skeleton className="h-6 w-24 rounded-full" />
+          <Skeleton className="h-10 w-full max-w-md" />
+          <Skeleton className="h-5 w-full max-w-lg" />
+        </div>
+        <Skeleton className="h-12 w-full rounded-full" />
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: LISTINGS_PAGE_SIZE }).map((_, index) => (
+            <Skeleton
+              className="aspect-[4/3] w-full rounded-none"
+              key={`search-fallback-${index}`}
+            />
+          ))}
+        </div>
+      </div>
+    </SectionContainer>
+  );
+}
 
-export default function SearchPage() {
-  const [input, setInput] = useState("");
-  const { messages, sendMessage, status } = useChat({
-    transport: new DefaultChatTransport({ api: "/api/chat" }),
-  });
-
-  const isLoading = status === "submitted" || status === "streaming";
+async function SearchPageContent({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const params = await searchParams;
+  const requestedPage = Number.parseInt(params.page ?? "1", 10);
+  const page = Number.isFinite(requestedPage) ? Math.max(1, requestedPage) : 1;
+  const browseData = await getListingsPage(page);
 
   return (
-    <SiteRailInset className="mx-auto flex w-full max-w-3xl flex-col py-10">
-      <div className="mb-8">
-        <h1 className="font-semibold text-3xl tracking-tight">AI Search</h1>
-        <p className="mt-2 text-muted-foreground">
-          Ask Discover to find or book local services. Try natural language like
-          &quot;Show me dentists nearby&quot;.
-        </p>
-      </div>
+    <AgentSearchView
+      browseListings={browseData.listings.map(toBrowseListing)}
+      browsePage={browseData.page}
+      browseTotal={browseData.total}
+      browseTotalPages={browseData.totalPages}
+    />
+  );
+}
 
-      <div className="mb-4 flex flex-wrap gap-2">
-        {suggestions.map((suggestion) => (
-          <Button
-            disabled={isLoading}
-            key={suggestion}
-            onClick={() => {
-              setInput(suggestion);
-              void sendMessage({ text: suggestion });
-            }}
-            size="sm"
-            variant="outline"
-          >
-            {suggestion}
-          </Button>
-        ))}
+export default function SearchPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  return (
+    <PageSections className="flex min-h-0 flex-1 flex-col py-4 sm:py-6">
+      <div className="flex min-h-0 flex-1 flex-col">
+        <Suspense fallback={<SearchFallback />}>
+          <SearchPageContent searchParams={searchParams} />
+        </Suspense>
       </div>
-
-      <div className="mb-6 min-h-[320px] space-y-4 rounded-2xl border bg-card p-4">
-        {messages.length === 0 ? (
-          <p className="text-muted-foreground text-sm">
-            Start a conversation to search listings or get a Cal.com booking
-            link.
-          </p>
-        ) : (
-          messages.map((message) => (
-            <div
-              className={
-                message.role === "user"
-                  ? "ml-auto max-w-[85%] rounded-xl bg-muted px-4 py-3 text-sm"
-                  : "max-w-[85%] rounded-xl border px-4 py-3 text-sm"
-              }
-              key={message.id}
-            >
-              {message.parts.map((part, index) => {
-                if (part.type === "text") {
-                  return (
-                    <p
-                      className="whitespace-pre-wrap"
-                      key={`${message.id}-${index}`}
-                    >
-                      {part.text}
-                    </p>
-                  );
-                }
-                return null;
-              })}
-            </div>
-          ))
-        )}
-      </div>
-
-      <form
-        className="flex gap-2"
-        onSubmit={(event) => {
-          event.preventDefault();
-          if (!input.trim() || isLoading) {
-            return;
-          }
-          void sendMessage({ text: input });
-          setInput("");
-        }}
-      >
-        <Input
-          disabled={isLoading}
-          onChange={(event) => setInput(event.target.value)}
-          placeholder="Ask Discover..."
-          value={input}
-        />
-        <Button disabled={isLoading || !input.trim()} type="submit">
-          Send
-        </Button>
-      </form>
-    </SiteRailInset>
+    </PageSections>
   );
 }
