@@ -23,6 +23,35 @@ export function ThemeToggle({
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (!mounted) {
+      return;
+    }
+
+    function onKeyDown(event: KeyboardEvent): void {
+      if (event.key.toLowerCase() !== "d") {
+        return;
+      }
+      if (event.metaKey || event.ctrlKey || event.altKey) {
+        return;
+      }
+
+      const { target } = event;
+      if (target instanceof HTMLElement) {
+        const tag = target.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA" || target.isContentEditable) {
+          return;
+        }
+      }
+
+      event.preventDefault();
+      setTheme(resolvedTheme === "dark" ? "light" : "dark");
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [mounted, resolvedTheme, setTheme]);
+
   if (!mounted) {
     return (
       <Button

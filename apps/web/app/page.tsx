@@ -1,6 +1,7 @@
 import { getFeaturedListings } from "@cal-market/agent-core";
 import Link from "next/link";
 
+import { HomeHero } from "@/components/home-hero/home-hero";
 import { PageSections } from "@/components/layout/page-sections";
 import { SectionDivider } from "@/components/layout/rail-divider";
 import { SectionContainer } from "@/components/layout/section-container";
@@ -15,24 +16,7 @@ export default async function HomePage() {
 
   return (
     <PageSections>
-      <SectionContainer>
-        <SectionHeader
-          actions={
-            <>
-              <Button render={<Link href="/search" />} size="lg">
-                Try AI search
-              </Button>
-              <Button render={<Link href="/" />} size="lg" variant="outline">
-                Browse listings
-              </Button>
-            </>
-          }
-          align="center"
-          badge="Cal.com side project"
-          description="A no-commission marketplace for dentists, vets, instructors, clubs, and more — powered by Cal.com scheduling links."
-          title="Discover local services you can book instantly"
-        />
-      </SectionContainer>
+      <HomeHero />
 
       <SectionDivider />
 
