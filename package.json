@@ -2,25 +2,37 @@
   "name": "cal-market",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
-  "dependencies": {
-    "next": "16.2.9",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "dev": "turbo dev --filter=@cal-market/web",
+    "dev:agent": "turbo dev --filter=@cal-market/agent",
+    "build": "turbo build --filter=@cal-market/web",
+    "build:agent": "turbo build --filter=@cal-market/agent",
+    "start": "turbo start",
+    "lint": "turbo lint",
+    "check": "ultracite check",
+    "fix": "ultracite fix",
+    "db:push": "turbo db:push",
+    "db:seed": "turbo db:seed",
+    "db:studio": "turbo db:studio",
+    "prepare": "husky"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.9",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "husky": "^9.1.7",
+    "oxfmt": "^0.55.0",
+    "oxlint": "^1.70.0",
+    "turbo": "^2.5.4",
+    "typescript": "^5",
+    "ultracite": "^7.8.3"
+  },
+  "engines": {
+    "node": ">=22.18.0",
+    "pnpm": ">=9.15.0"
+  },
+  "packageManager": "pnpm@9.15.4",
+  "pnpm": {
+    "overrides": {
+      "typescript": "5.8.3"
+    }
   }
 }
