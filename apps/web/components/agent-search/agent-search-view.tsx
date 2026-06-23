@@ -1,6 +1,7 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
+import type { UIMessage } from "ai";
 import { DefaultChatTransport } from "ai";
 import { useRouter, useSearchParams } from "next/navigation";
 import type * as React from "react";
@@ -20,9 +21,10 @@ import type {
   SearchListingsToolOutput,
 } from "@/lib/agent-search";
 import {
-  buildResultsTitle,
+  buildResultsTitleForExchange,
   extractLatestExchange,
-  extractSearchListingsFromMessages,
+  extractSearchListingsForLatestExchange,
+  latestExchangeHasSearchListingsTool,
 } from "@/lib/agent-search";
 
 const suggestions = [
@@ -50,13 +52,19 @@ function getDisplayListings(
 }
 
 function getPageTitle(
-  hasAgentResults: boolean,
   exchange: AgentExchange | null,
   searchResult: SearchListingsToolOutput | null,
   initialQuery: string | null
 ): string {
-  if (hasAgentResults || exchange) {
-    return buildResultsTitle(searchResult, exchange?.userText ?? initialQuery);
+  if (exchange) {
+    return buildResultsTitleForExchange(
+      searchResult,
+      exchange.userText ?? initialQuery
+    );
+  }
+
+  if (initialQuery) {
+    return initialQuery;
   }
 
   return "Services near you";
@@ -158,6 +166,48 @@ function getPromptSection({
   return null;
 }
 
+function useAgentSearchResults(
+  messages: UIMessage[],
+  isLoading: boolean,
+  browseListings: BrowseListing[],
+  browseTotal: number,
+  initialQuery: string | null
+) {
+  const exchange = extractLatestExchange(messages);
+  const searchResult = isLoading
+    ? null
+    : extractSearchListingsForLatestExchange(messages);
+  const latestTurnSearched =
+    !isLoading && latestExchangeHasSearchListingsTool(messages);
+  const agentListings = searchResult?.listings ?? [];
+  const hasAgentResults = !isLoading && agentListings.length > 0;
+  const isAgentMode = Boolean(initialQuery) || messages.length > 0;
+  const showBrowse = !isAgentMode || (!isLoading && !exchange);
+  const displayListings = getDisplayListings(
+    hasAgentResults,
+    agentListings,
+    showBrowse,
+    browseListings
+  );
+  const displayCount = hasAgentResults ? agentListings.length : browseTotal;
+  const title = getPageTitle(
+    exchange,
+    isLoading ? null : searchResult,
+    initialQuery
+  );
+
+  return {
+    displayCount,
+    displayListings,
+    exchange,
+    hasAgentResults,
+    isAgentMode,
+    latestTurnSearched,
+    showBrowse,
+    title,
+  };
+}
+
 export function AgentSearchView({
   browseListings,
   browsePage,
@@ -172,31 +222,29 @@ export function AgentSearchView({
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q");
-  const hasAutoSubmitted = useRef(false);
+  const previousInitialQuery = useRef<string | null>(null);
+  const pendingSubmittedQuery = useRef<string | null>(null);
 
   const [input, setInput] = useState(initialQuery ?? "");
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, setMessages, status } = useChat({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
   });
 
   const isLoading = status === "submitted" || status === "streaming";
-  const exchange = extractLatestExchange(messages);
-  const searchResult = extractSearchListingsFromMessages(messages);
-  const agentListings = searchResult?.listings ?? [];
-  const hasAgentResults = agentListings.length > 0;
-  const isAgentMode = Boolean(initialQuery) || messages.length > 0;
-  const showBrowse = !isAgentMode || (!isLoading && !exchange);
-  const displayListings = getDisplayListings(
-    hasAgentResults,
-    agentListings,
-    showBrowse,
-    browseListings
-  );
-  const displayCount = hasAgentResults ? agentListings.length : browseTotal;
-  const title = getPageTitle(
-    hasAgentResults,
+  const {
+    displayCount,
+    displayListings,
     exchange,
-    searchResult,
+    hasAgentResults,
+    isAgentMode,
+    latestTurnSearched,
+    showBrowse,
+    title,
+  } = useAgentSearchResults(
+    messages,
+    isLoading,
+    browseListings,
+    browseTotal,
     initialQuery
   );
 
@@ -207,6 +255,7 @@ export function AgentSearchView({
         return;
       }
 
+      pendingSubmittedQuery.current = trimmed;
       router.replace(`/search?q=${encodeURIComponent(trimmed)}`, {
         scroll: false,
       });
@@ -217,13 +266,20 @@ export function AgentSearchView({
   );
 
   useEffect(() => {
-    if (!initialQuery || hasAutoSubmitted.current) {
+    if (!initialQuery || initialQuery === previousInitialQuery.current) {
       return;
     }
 
-    hasAutoSubmitted.current = true;
+    if (pendingSubmittedQuery.current === initialQuery) {
+      pendingSubmittedQuery.current = null;
+      previousInitialQuery.current = initialQuery;
+      return;
+    }
+
+    previousInitialQuery.current = initialQuery;
+    setMessages([]);
     void sendMessage({ text: initialQuery });
-  }, [initialQuery, sendMessage]);
+  }, [initialQuery, sendMessage, setMessages]);
 
   const activeUserQuery = exchange?.userText ?? initialQuery;
 
@@ -261,11 +317,9 @@ export function AgentSearchView({
           </div>
         ) : null}
 
-        {isLoading && isAgentMode && !hasAgentResults ? (
-          <SearchLoadingGrid />
-        ) : null}
+        {isLoading && isAgentMode ? <SearchLoadingGrid /> : null}
 
-        {displayListings.length > 0 ? (
+        {!isLoading && displayListings.length > 0 ? (
           <SearchResultsSection
             browsePage={browsePage}
             browseTotalPages={browseTotalPages}
@@ -275,7 +329,7 @@ export function AgentSearchView({
           />
         ) : null}
 
-        {!isLoading && exchange && !hasAgentResults ? (
+        {!isLoading && exchange && latestTurnSearched && !hasAgentResults ? (
           <p className="text-center text-muted-foreground text-sm">
             No listings matched that search. Try a different category or city.
           </p>

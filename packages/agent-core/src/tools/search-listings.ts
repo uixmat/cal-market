@@ -4,8 +4,8 @@ import { and, eq, ilike, or, sql } from "drizzle-orm";
 
 import {
   CATEGORY_ALIASES,
-  extractCityFromQuery,
   normalizeCategory,
+  resolveInterpretedCity,
 } from "../utils/categories";
 
 export interface SearchListingsInput {
@@ -27,8 +27,7 @@ export async function searchListings(
   const limit = input.limit ?? 6;
   const interpretedCategory =
     input.category ?? normalizeCategory(input.query) ?? undefined;
-  const interpretedCity =
-    input.city ?? extractCityFromQuery(input.query) ?? "San Francisco";
+  const interpretedCity = resolveInterpretedCity(input.query);
 
   const conditions = [];
 

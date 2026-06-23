@@ -1,10 +1,15 @@
-import { searchListings } from "@cal-market/agent-core";
+import { searchListings, validateDiscoverQuery } from "@cal-market/agent-core";
 import { defineTool } from "eve/tools";
 import { z } from "zod";
 
 export default defineTool({
   description: "Search Discover marketplace listings",
   async execute(input) {
+    const validation = validateDiscoverQuery(input.query);
+    if (!validation.ok) {
+      throw new Error(validation.message);
+    }
+
     const result = await searchListings(input);
     return {
       interpretedCategory: result.interpretedCategory,

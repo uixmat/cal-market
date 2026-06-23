@@ -3,6 +3,7 @@ import {
   bookListingSchema,
   searchListings,
   searchListingsSchema,
+  validateDiscoverQuery,
 } from "@cal-market/agent-core";
 import { createMcpHandler } from "mcp-handler";
 
@@ -15,6 +16,14 @@ const handler = createMcpHandler(
         inputSchema: searchListingsSchema,
       },
       async (input) => {
+        const validation = validateDiscoverQuery(input.query);
+        if (!validation.ok) {
+          return {
+            content: [{ text: validation.message, type: "text" as const }],
+            isError: true,
+          };
+        }
+
         const result = await searchListings(input);
         return {
           content: [
