@@ -136,6 +136,144 @@ export function extractSearchListingsFromMessages(
   return null;
 }
 
+function findLatestUserMessageIndex(messages: UIMessage[]): number {
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    if (messages[index]?.role === "user") {
+      return index;
+    }
+  }
+
+  return -1;
+}
+
+function findLatestAssistantMessageIndexAfter(
+  messages: UIMessage[],
+  userMessageIndex: number
+): number {
+  for (let index = messages.length - 1; index > userMessageIndex; index -= 1) {
+    if (messages[index]?.role === "assistant") {
+      return index;
+    }
+  }
+
+  return -1;
+}
+
+function extractSearchListingsFromAssistantMessage(
+  message: UIMessage
+): SearchListingsToolOutput | null {
+  if (message.role !== "assistant") {
+    return null;
+  }
+
+  for (
+    let partIndex = message.parts.length - 1;
+    partIndex >= 0;
+    partIndex -= 1
+  ) {
+    const part = message.parts[partIndex];
+
+    if (!isToolUIPart(part)) {
+      continue;
+    }
+
+    if (part.type !== "tool-search_listings") {
+      continue;
+    }
+
+    if (part.state !== "output-available") {
+      continue;
+    }
+
+    if (!isSearchListingsOutput(part.output)) {
+      continue;
+    }
+
+    return part.output;
+  }
+
+  return null;
+}
+
+export function extractPriorSearchContext(
+  messages: UIMessage[]
+): Pick<
+  SearchListingsToolOutput,
+  "interpretedCategory" | "interpretedCity"
+> | null {
+  const latestUserIndex = findLatestUserMessageIndex(messages);
+  if (latestUserIndex <= 0) {
+    return null;
+  }
+
+  for (let index = latestUserIndex - 1; index >= 0; index -= 1) {
+    const message = messages[index];
+    if (!message || message.role !== "assistant") {
+      continue;
+    }
+
+    const output = extractSearchListingsFromAssistantMessage(message);
+    if (output) {
+      return {
+        interpretedCategory: output.interpretedCategory,
+        interpretedCity: output.interpretedCity,
+      };
+    }
+  }
+
+  return null;
+}
+
+export function extractSearchListingsForLatestExchange(
+  messages: UIMessage[]
+): SearchListingsToolOutput | null {
+  const latestUserIndex = findLatestUserMessageIndex(messages);
+  if (latestUserIndex === -1) {
+    return null;
+  }
+
+  const latestAssistantIndex = findLatestAssistantMessageIndexAfter(
+    messages,
+    latestUserIndex
+  );
+  if (latestAssistantIndex === -1) {
+    return null;
+  }
+
+  const assistantMessage = messages[latestAssistantIndex];
+  if (!assistantMessage) {
+    return null;
+  }
+
+  return extractSearchListingsFromAssistantMessage(assistantMessage);
+}
+
+export function latestExchangeHasSearchListingsTool(
+  messages: UIMessage[]
+): boolean {
+  const latestUserIndex = findLatestUserMessageIndex(messages);
+  if (latestUserIndex === -1) {
+    return false;
+  }
+
+  const latestAssistantIndex = findLatestAssistantMessageIndexAfter(
+    messages,
+    latestUserIndex
+  );
+  if (latestAssistantIndex === -1) {
+    return false;
+  }
+
+  const assistantMessage = messages[latestAssistantIndex];
+  if (!assistantMessage || assistantMessage.role !== "assistant") {
+    return false;
+  }
+
+  return assistantMessage.parts.some(
+    (part) => isToolUIPart(part) && part.type === "tool-search_listings"
+  );
+}
+
 export function formatCategoryLabel(category: string): string {
   return category
     .split(/[-_\s]+/)
@@ -209,6 +347,21 @@ export function buildResultsTitle(
     const category = formatCategoryLabel(searchResult.interpretedCategory);
     const city = searchResult.interpretedCity ?? "San Francisco";
     return `${category} near ${city}`;
+  }
+
+  if (fallbackQuery) {
+    return fallbackQuery;
+  }
+
+  return "Services near you";
+}
+
+export function buildResultsTitleForExchange(
+  searchResult: SearchListingsToolOutput | null,
+  fallbackQuery: string | null
+): string {
+  if (searchResult) {
+    return buildResultsTitle(searchResult, fallbackQuery);
   }
 
   if (fallbackQuery) {
