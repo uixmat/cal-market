@@ -6,6 +6,7 @@ const monorepoRoot = path.resolve(import.meta.dirname, "../../..");
 
 config({ path: path.resolve(monorepoRoot, ".env") });
 config({ path: path.resolve(monorepoRoot, ".env.local") });
+config({ override: true, path: path.resolve(monorepoRoot, "apps/web/.env") });
 
 const { db } = await import("./client");
 const { listings } = await import("./schema/listings");

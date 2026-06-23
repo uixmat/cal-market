@@ -105,9 +105,20 @@ export function TextFlipSlot({
       return;
     }
 
+    const nextWidth = widths[nextIndex];
+    if (nextWidth === animatedWidth) {
+      isResizingRef.current = false;
+      allowEnterAnimationRef.current = true;
+      setIndex(nextIndex);
+      setPendingIndex(null);
+      pendingIndexRef.current = null;
+      setTextVisible(true);
+      return;
+    }
+
     isResizingRef.current = true;
-    setAnimatedWidth(widths[nextIndex]);
-  }, [widths]);
+    setAnimatedWidth(nextWidth);
+  }, [animatedWidth, widths]);
 
   const handleWidthComplete = useCallback(() => {
     if (!isResizingRef.current) {
@@ -170,6 +181,7 @@ export function TextFlipSlot({
   const heightWord = words[pendingIndex ?? index] ?? words[0];
   const widthMotionTransition =
     shouldAnimate && hasMeasuredRef.current ? widthTransition : { duration: 0 };
+  const hasResolvedWidth = resolvedWidth !== undefined && resolvedWidth > 0;
 
   return (
     <span
@@ -193,7 +205,7 @@ export function TextFlipSlot({
       </span>
 
       <motion.span
-        animate={{ width: resolvedWidth ?? "auto" }}
+        animate={{ width: hasResolvedWidth ? resolvedWidth : "auto" }}
         className="inline-grid overflow-hidden align-bottom whitespace-nowrap [grid-template-areas:'stack'] *:[grid-area:stack]"
         initial={false}
         onAnimationComplete={() => {

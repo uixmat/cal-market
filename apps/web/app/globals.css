@@ -469,3 +469,17 @@
     animation-duration: 0s !important;
   }
 }
+
+/* iOS Safari can leave view-transition layers above interactive UI. */
+@media (pointer: coarse) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+    pointer-events: none !important;
+  }
+
+  ::view-transition-group(site-header) {
+    z-index: auto !important;
+  }
+}

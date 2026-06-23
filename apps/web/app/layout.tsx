@@ -53,7 +53,9 @@ export default function RootLayout({
           <ScrollToTop />
           <SiteRail>
             <SiteHeader />
-            <main className="flex flex-1 flex-col">{children}</main>
+            <main className="flex flex-1 flex-col max-sm:pt-[calc(4.75rem+env(safe-area-inset-top,0px))]">
+              {children}
+            </main>
           </SiteRail>
           {modal}
         </ThemeProvider>

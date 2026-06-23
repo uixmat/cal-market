@@ -1,8 +1,10 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": ["DATABASE_URL", "OPENAI_API_KEY"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
+      "env": ["DATABASE_URL", "OPENAI_API_KEY"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "dev": {
@@ -14,11 +16,13 @@
     },
     "check": {},
     "db:push": {
-      "cache": false
+      "cache": false,
+      "env": ["DATABASE_URL"]
     },
     "db:seed": {
       "cache": false,
-      "dependsOn": ["db:push"]
+      "dependsOn": ["db:push"],
+      "env": ["DATABASE_URL"]
     },
     "db:studio": {
       "cache": false,
