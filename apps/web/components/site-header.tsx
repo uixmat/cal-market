@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 import { siteRailInsetClass } from "@/components/layout/site-rail";
 import { LocationCountrySelector } from "@/components/location-country-selector";
+import { SiteMobileMenu } from "@/components/site-mobile-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -26,10 +27,7 @@ export function SiteHeader(): React.ReactElement {
   }, []);
 
   return (
-    <header
-      className="isolate sticky top-0 z-50"
-      style={{ viewTransitionName: "site-header" }}
-    >
+    <header className="isolate top-0 z-[100] max-sm:fixed max-sm:inset-x-0 max-sm:pt-[env(safe-area-inset-top,0px)] sm:sticky sm:z-50 max-sm:[view-transition-name:none] sm:[view-transition-name:site-header]">
       <div
         aria-hidden
         className={cn(
@@ -37,7 +35,12 @@ export function SiteHeader(): React.ReactElement {
           scrolled ? "opacity-100" : "opacity-0"
         )}
       />
-      <div className={cn(siteRailInsetClass, "relative z-10 pt-4 pb-3")}>
+      <div
+        className={cn(
+          siteRailInsetClass,
+          "relative z-10 pt-4 pb-3 max-sm:touch-manipulation"
+        )}
+      >
         <div
           className={cn(
             "mx-auto flex w-full items-center justify-between gap-3 rounded-lg border px-3 py-2 transition-[max-width,background-color,border-color,box-shadow,backdrop-filter,border-radius] duration-200 ease-out sm:gap-4 sm:px-4 sm:py-2.5",
@@ -55,14 +58,19 @@ export function SiteHeader(): React.ReactElement {
               Discover
             </Link>
 
-            <LocationCountrySelector />
+            <LocationCountrySelector className="hidden sm:flex" />
           </div>
 
-          <div className="ms-auto flex shrink-0 items-center gap-2">
-            <Button render={<Link href="/search" />} size="sm">
+          <div className="pointer-events-auto ms-auto flex shrink-0 items-center gap-1 sm:gap-2">
+            <Button
+              className="hidden sm:inline-flex"
+              render={<Link href="/search" />}
+              size="sm"
+            >
               Discover
             </Button>
-            <ThemeToggle />
+            <ThemeToggle className="hidden sm:inline-flex" />
+            <SiteMobileMenu />
           </div>
         </div>
       </div>

@@ -21,6 +21,8 @@ function getClient() {
     globalForDb.postgresClient = postgres(getDatabaseUrl(), {
       idle_timeout: 20,
       max: 10,
+      // Supabase transaction pooler (port 6543) does not support prepared statements.
+      prepare: false,
     });
   }
   return globalForDb.postgresClient;

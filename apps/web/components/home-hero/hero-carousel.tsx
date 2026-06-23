@@ -2,28 +2,32 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { cn } from "@/lib/utils";
 
-import { CarouselTicker } from "./carousel-ticker";
 import { HERO_SLIDE_DURATION_MS, heroSlides } from "./hero-slides";
 
 interface HeroCarouselProps {
+  activeIndex: number;
   dimmed?: boolean;
+  onActiveIndexChange: (index: number) => void;
   paused?: boolean;
 }
 
 export function HeroCarousel({
+  activeIndex,
   dimmed = false,
+  onActiveIndexChange,
   paused = false,
 }: HeroCarouselProps): React.ReactElement {
   const reducedMotion = useReducedMotion();
-  const [activeIndex, setActiveIndex] = useState(0);
+  const activeIndexRef = useRef(activeIndex);
+  activeIndexRef.current = activeIndex;
 
   const goToNext = useCallback(() => {
-    setActiveIndex((current) => (current + 1) % heroSlides.length);
-  }, []);
+    onActiveIndexChange((activeIndexRef.current + 1) % heroSlides.length);
+  }, [onActiveIndexChange]);
 
   useEffect(() => {
     if (paused || reducedMotion) {
@@ -32,12 +36,15 @@ export function HeroCarousel({
 
     const timer = window.setInterval(goToNext, HERO_SLIDE_DURATION_MS);
     return () => window.clearInterval(timer);
-  }, [activeIndex, goToNext, paused, reducedMotion]);
+  }, [goToNext, paused, reducedMotion]);
 
   const crossfadeDuration = reducedMotion ? 0 : 1.4;
 
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0">
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 z-0 select-none"
+    >
       {heroSlides.map((slide, index) => {
         const isActive = index === activeIndex;
 
@@ -70,7 +77,7 @@ export function HeroCarousel({
               }}
             >
               <Image
-                alt=""
+                alt={slide.alt}
                 className="object-cover"
                 fill
                 priority={index === 0}
@@ -84,20 +91,10 @@ export function HeroCarousel({
 
       <div
         className={cn(
-          "absolute inset-0 z-[3] bg-black/50 transition-opacity duration-300",
+          "absolute inset-0 z-[3] bg-black/50 transition-opacity duration-300 max-sm:bg-black/60",
           dimmed && "bg-black/65"
         )}
       />
-
-      <div className="pointer-events-auto absolute inset-x-0 bottom-6 z-[4] flex justify-center">
-        <CarouselTicker
-          activeIndex={activeIndex}
-          count={heroSlides.length}
-          onSelect={setActiveIndex}
-          paused={paused}
-          reducedMotion={Boolean(reducedMotion)}
-        />
-      </div>
     </div>
   );
 }
