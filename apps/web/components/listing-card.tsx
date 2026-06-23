@@ -21,7 +21,10 @@ import {
   listingLayoutZIndex,
 } from "@/lib/listing-layout";
 import {
+  clearActiveListingSlug,
   getListingModalClosingSnapshot,
+  isActiveListingSlug,
+  markActiveListingSlug,
   registerListingForModal,
   subscribeListingModalClosing,
 } from "@/lib/listing-modal-cache";
@@ -71,6 +74,15 @@ export function ListingCard({
   });
 
   function elevateCard(): void {
+    if (!isActiveListingSlug(slug)) {
+      return;
+    }
+
+    zIndex.set(listingLayoutZIndex.thumbnail);
+  }
+
+  function beginInteraction(): void {
+    markActiveListingSlug(slug);
     zIndex.set(listingLayoutZIndex.thumbnail);
   }
 
@@ -81,16 +93,19 @@ export function ListingCard({
         className
       )}
       href={`/listings/${slug}`}
-      onPointerDown={elevateCard}
+      onPointerDown={beginInteraction}
       scroll={false}
     >
       <motion.div
         className="listing-card relative overflow-hidden rounded-none bg-card will-change-transform"
         layoutId={listingLayoutId(slug)}
-        onLayoutAnimationComplete={() => zIndex.set(0)}
+        onLayoutAnimationComplete={() => {
+          zIndex.set(0);
+          clearActiveListingSlug(slug);
+        }}
         onLayoutAnimationStart={elevateCard}
         onTap={() => {
-          frame.postRender(elevateCard);
+          frame.postRender(beginInteraction);
         }}
         style={{ zIndex }}
       >

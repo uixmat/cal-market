@@ -60,14 +60,13 @@ function ListingDetailModalLayer({
       <div
         aria-labelledby={`listing-modal-title-${slug}`}
         aria-modal="true"
-        className="pointer-events-none fixed inset-0 flex items-end justify-center p-0 sm:items-center sm:p-6"
+        className="pointer-events-none fixed inset-0 grid place-items-center p-4 sm:p-6"
         role="dialog"
         style={{ zIndex: listingLayoutZIndex.image }}
       >
         <motion.div
           className={cn(
-            "pointer-events-auto flex max-h-[min(92dvh,900px)] w-full min-w-0 max-w-2xl flex-col overflow-hidden bg-card shadow-2xl will-change-transform",
-            "max-sm:max-h-[92dvh] max-sm:rounded-t-2xl sm:rounded-2xl"
+            "pointer-events-auto flex max-h-[min(92dvh,900px)] w-full min-w-0 max-w-2xl flex-col overflow-hidden rounded-2xl bg-card shadow-2xl will-change-transform"
           )}
           layoutId={listingLayoutId(slug)}
           onClick={(event) => event.stopPropagation()}
