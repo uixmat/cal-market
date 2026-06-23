@@ -8,6 +8,7 @@ export interface BrowseListing {
   description: string;
   id: string;
   imageUrl: string;
+  region: string;
   slug: string;
   title: string;
 }
@@ -289,6 +290,7 @@ export function toBrowseListing(listing: {
   description: string;
   id: string;
   imageUrl: string;
+  region?: string;
   slug: string;
   title: string;
 }): BrowseListing {
@@ -299,6 +301,7 @@ export function toBrowseListing(listing: {
     description: listing.description,
     id: listing.id,
     imageUrl: listing.imageUrl,
+    region: listing.region ?? "CA",
     slug: listing.slug,
     title: listing.title,
   };

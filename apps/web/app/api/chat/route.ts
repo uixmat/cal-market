@@ -132,6 +132,7 @@ export async function POST(request: Request) {
               description: listing.description,
               id: listing.id,
               imageUrl: listing.imageUrl,
+              region: listing.region,
               slug: listing.slug,
               title: listing.title,
             })),

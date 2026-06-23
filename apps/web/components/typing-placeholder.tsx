@@ -128,7 +128,7 @@ export function TypingPlaceholderOverlay({
   return (
     <div aria-hidden className={cn(promptInputOverlayClassName, className)}>
       <span className="block truncate text-white/55">
-        {prefix}
+        {prefix ? <span className="max-sm:hidden">{prefix}</span> : null}
         {displayText}
         <span
           aria-hidden

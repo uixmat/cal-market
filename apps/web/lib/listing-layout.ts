@@ -6,8 +6,14 @@ export function listingImageLayoutId(slug: string): string {
   return `listing-${slug}-image`;
 }
 
-/** Above site header (z-50) and grid hover states during shared layout. */
-export const LISTING_MODAL_Z_INDEX = 2000;
+/** motion.dev modal-shared-layout z-stack base */
+export const LISTING_LAYOUT_BASE_Z_INDEX = 2000;
+
+export const listingLayoutZIndex = {
+  image: LISTING_LAYOUT_BASE_Z_INDEX + 2,
+  overlay: LISTING_LAYOUT_BASE_Z_INDEX,
+  thumbnail: LISTING_LAYOUT_BASE_Z_INDEX + 1,
+} as const;
 
 export function isListingDetailPath(pathname: string): boolean {
   return /^\/listings\/[^/]+$/.test(pathname);
@@ -21,3 +27,6 @@ export function isListingModalNavigation(
   const isListing = isListingDetailPath(pathname);
   return wasListing !== isListing;
 }
+
+/** @deprecated Use listingLayoutZIndex.image */
+export const LISTING_MODAL_Z_INDEX = listingLayoutZIndex.image;

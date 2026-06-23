@@ -441,6 +441,11 @@
     both page-fade-in;
 }
 
+::view-transition-old(.none),
+::view-transition-new(.none) {
+  animation: none;
+}
+
 @keyframes page-fade-in {
   from {
     opacity: 0;

@@ -9,12 +9,14 @@ import { LocationCountrySelector } from "@/components/location-country-selector"
 import { SiteMobileMenu } from "@/components/site-mobile-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { useListingModalUiActive } from "@/hooks/use-listing-modal-ui-active";
 import { cn } from "@/lib/utils";
 
 const scrollThresholdPx = 12;
 
 export function SiteHeader(): React.ReactElement {
   const [scrolled, setScrolled] = useState(false);
+  const listingModalActive = useListingModalUiActive();
 
   useEffect(() => {
     const onScroll = (): void => {
@@ -27,7 +29,15 @@ export function SiteHeader(): React.ReactElement {
   }, []);
 
   return (
-    <header className="isolate top-0 z-[100] max-sm:fixed max-sm:inset-x-0 max-sm:pt-[env(safe-area-inset-top,0px)] sm:sticky sm:z-50 max-sm:[view-transition-name:none] sm:[view-transition-name:site-header]">
+    <header
+      className={cn(
+        "isolate top-0 z-[100] max-sm:fixed max-sm:inset-x-0 max-sm:pt-[env(safe-area-inset-top,0px)] sm:sticky sm:z-50",
+        listingModalActive
+          ? "[view-transition-name:none]"
+          : "max-sm:[view-transition-name:none] sm:[view-transition-name:site-header]",
+        listingModalActive && "pointer-events-none"
+      )}
+    >
       <div
         aria-hidden
         className={cn(

@@ -21,7 +21,7 @@ const suggestions = [
 ];
 
 const heroSurfaceClass =
-  "isolate relative flex min-h-[72dvh] w-full flex-col items-center justify-center overflow-hidden rounded-xl border border-border shadow-[0_1px_5px_-4px_rgba(36,36,36,0.18),0_4px_8px_0_rgba(36,36,36,0.04)] sm:min-h-[min(72vh,640px)] dark:shadow-[0_1px_5px_-4px_rgba(0,0,0,0.5),0_4px_8px_0_rgba(0,0,0,0.2)]";
+  "isolate relative flex h-[72dvh] w-full flex-col items-center justify-center overflow-hidden rounded-xl border border-border shadow-[0_1px_5px_-4px_rgba(36,36,36,0.18),0_4px_8px_0_rgba(36,36,36,0.04)] sm:h-[min(72vh,640px)] dark:shadow-[0_1px_5px_-4px_rgba(0,0,0,0.5),0_4px_8px_0_rgba(0,0,0,0.2)]";
 
 export function HomeHero(): React.ReactElement {
   const router = useRouter();

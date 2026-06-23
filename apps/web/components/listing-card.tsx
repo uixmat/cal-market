@@ -3,6 +3,8 @@
 import { frame, motion, useMotionValue } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useSyncExternalStore } from "react";
 import type * as React from "react";
 
 import { CategoryBadge } from "@/components/category-badge";
@@ -16,8 +18,13 @@ import {
 import {
   listingImageLayoutId,
   listingLayoutId,
-  LISTING_MODAL_Z_INDEX,
+  listingLayoutZIndex,
 } from "@/lib/listing-layout";
+import {
+  getListingModalClosingSnapshot,
+  registerListingForModal,
+  subscribeListingModalClosing,
+} from "@/lib/listing-modal-cache";
 import { cn } from "@/lib/utils";
 
 interface ListingCardProps {
@@ -27,6 +34,8 @@ interface ListingCardProps {
   category: string;
   city: string;
   imageUrl: string;
+  calLink?: string;
+  region?: string;
   className?: string;
 }
 
@@ -37,12 +46,32 @@ export function ListingCard({
   category,
   city,
   imageUrl,
+  calLink = "",
+  region = "CA",
   className,
 }: ListingCardProps): React.ReactElement {
+  const pathname = usePathname();
+  const closingSlug = useSyncExternalStore(
+    subscribeListingModalClosing,
+    getListingModalClosingSnapshot,
+    () => null
+  );
+  const isExpanded = pathname === `/listings/${slug}` && closingSlug !== slug;
   const zIndex = useMotionValue(0);
 
+  registerListingForModal({
+    calLink,
+    category,
+    city,
+    description,
+    imageUrl,
+    region,
+    slug,
+    title,
+  });
+
   function elevateCard(): void {
-    zIndex.set(LISTING_MODAL_Z_INDEX);
+    zIndex.set(listingLayoutZIndex.thumbnail);
   }
 
   return (
@@ -65,11 +94,15 @@ export function ListingCard({
         }}
         style={{ zIndex }}
       >
-        <Card className="gap-0 overflow-visible rounded-none border-0 bg-transparent p-0 shadow-none [&::before]:hidden">
+        <Card
+          className={cn(
+            "gap-0 overflow-visible rounded-none border-0 bg-transparent p-0 shadow-none [&::before]:hidden",
+            isExpanded && "invisible"
+          )}
+        >
           <motion.div
             className="listing-card-image relative aspect-[4/3] overflow-hidden will-change-transform"
             layoutId={listingImageLayoutId(slug)}
-            style={{ zIndex }}
           >
             <div className="absolute inset-0 transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover:scale-[1.08]">
               <Image

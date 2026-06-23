@@ -12,7 +12,7 @@ export function FeaturedListingsGrid({
 }): React.ReactElement {
   return (
     <div className="flex flex-col gap-6">
-      <ListingsGrid listings={listings} />
+      <ListingsGrid listings={listings} showFade={false} />
 
       <div className="flex justify-center">
         <Button render={<Link href="/search" />} size="sm">

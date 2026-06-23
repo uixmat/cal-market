@@ -13,6 +13,7 @@ import { SectionContainer } from "@/components/layout/section-container";
 import { SectionHeader } from "@/components/layout/section-header";
 import { TopRatedProfessionals } from "@/components/top-rated-professionals/top-rated-professionals";
 import { Button } from "@/components/ui/button";
+import { toBrowseListing } from "@/lib/agent-search";
 
 export const dynamic = "force-dynamic";
 
@@ -45,7 +46,7 @@ export default async function HomePage() {
               Search with AI
             </Button>
           </div>
-          <FeaturedListingsGrid listings={listings} />
+          <FeaturedListingsGrid listings={listings.map(toBrowseListing)} />
         </div>
       </SectionContainer>
 
